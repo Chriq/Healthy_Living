@@ -26,6 +26,13 @@ public class MovementController : MonoBehaviour {
 				input = Vector2.right;
 			} 
 
+			else if(Input.GetKeyDown(KeyCode.E)) {
+				Vector3 targetPos = transform.position;
+				targetPos.x += animator.GetFloat("horizontal");
+				targetPos.y += animator.GetFloat("vertical");
+				Interact(targetPos);
+			}
+
 			if(input != Vector2.zero) {
 				Vector3 targetPos = transform.position;
 				targetPos.x += input.x;
@@ -34,7 +41,9 @@ public class MovementController : MonoBehaviour {
 				animator.SetFloat("horizontal", input.x);
 				animator.SetFloat("vertical", input.y);
 
-				StartCoroutine(MoveToCell(targetPos));
+				if(!IsTileOccupied(targetPos)) {
+					StartCoroutine(MoveToCell(targetPos));
+				}
 			}
 		}
 
@@ -51,5 +60,25 @@ public class MovementController : MonoBehaviour {
 
 		transform.position = targetPos;
 		isMoving = false;
+	}
+
+	private void Interact(Vector3 checkPos) {
+		Vector3 posWithOffset = checkPos + new Vector3(0.5f, -0.25f);
+		Collider2D collider = Physics2D.OverlapCircle(posWithOffset, 0.3f);
+		if(collider) {
+			Interactable interactable;
+			if(collider.gameObject.TryGetComponent(out interactable)) {
+				interactable.Interact();
+			}
+		}
+	}
+
+	private bool IsTileOccupied(Vector3 targetPos) {
+		Vector3 posWithOffset = targetPos + new Vector3(0.5f, -0.25f);
+		if(Physics2D.OverlapCircle(posWithOffset, 0.3f)) {
+			return true;
+		}
+
+		return false;
 	}
 }

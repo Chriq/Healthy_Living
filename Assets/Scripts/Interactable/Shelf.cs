@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Shelf : MonoBehaviour {
+public class Shelf : MonoBehaviour, Interactable {
 	[SerializeField] private SpriteRenderer slot1;
 	[SerializeField] private SpriteRenderer slot2;
 	[SerializeField] private SpriteRenderer slot3;
@@ -26,5 +26,9 @@ public class Shelf : MonoBehaviour {
 	public void setFoodOnShelf(Food food) {
 		foodOnShelf = food;
 		FillShelves(food.sprite);
+	}
+
+	public void Interact() {
+		throw new System.NotImplementedException();
 	}
 }
