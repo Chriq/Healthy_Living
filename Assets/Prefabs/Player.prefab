@@ -153,3 +153,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 1.5
   animator: {fileID: 2337166998795597164}
+  spriteOffset: {x: 0.5, y: -0.5, z: 0}

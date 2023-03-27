@@ -8,7 +8,8 @@ public class Shelf : MonoBehaviour, Interactable {
 	[SerializeField] private SpriteRenderer slot3;
 	[SerializeField] private SpriteRenderer slot4;
 
-	[SerializeField] private int distance = 1;
+	public int distance = 1;
+	public bool isEmpty = true;
 
 	private Food foodOnShelf;
 
@@ -26,9 +27,10 @@ public class Shelf : MonoBehaviour, Interactable {
 	public void setFoodOnShelf(Food food) {
 		foodOnShelf = food;
 		FillShelves(food.sprite);
+		isEmpty = false;
 	}
 
 	public void Interact() {
-		throw new System.NotImplementedException();
+		GameManager.Instance.ConsumeFood(foodOnShelf);
 	}
 }

@@ -5,6 +5,7 @@ using UnityEngine;
 public class MovementController : MonoBehaviour {
 	public float speed;
 	public Animator animator;
+	public Vector3 spriteOffset;
 
 	private bool isMoving;
 	private Vector2 input;
@@ -59,11 +60,12 @@ public class MovementController : MonoBehaviour {
 		}
 
 		transform.position = targetPos;
+		GameManager.Instance.TakeStep();
 		isMoving = false;
 	}
 
 	private void Interact(Vector3 checkPos) {
-		Vector3 posWithOffset = checkPos + new Vector3(0.5f, -0.25f);
+		Vector3 posWithOffset = checkPos + spriteOffset;
 		Collider2D collider = Physics2D.OverlapCircle(posWithOffset, 0.3f);
 		if(collider) {
 			Interactable interactable;
@@ -74,8 +76,9 @@ public class MovementController : MonoBehaviour {
 	}
 
 	private bool IsTileOccupied(Vector3 targetPos) {
-		Vector3 posWithOffset = targetPos + new Vector3(0.5f, -0.25f);
-		if(Physics2D.OverlapCircle(posWithOffset, 0.3f)) {
+		Vector3 posWithOffset = targetPos + spriteOffset;
+		Collider2D col;
+		if(col = Physics2D.OverlapCircle(posWithOffset, 0.3f)) {
 			return true;
 		}
 
