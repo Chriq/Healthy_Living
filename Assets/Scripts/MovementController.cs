@@ -59,7 +59,10 @@ public class MovementController : MonoBehaviour {
 			yield return null;
 		}
 
-		transform.position = targetPos;
+		if(input == Vector2.zero) {
+			transform.position = targetPos;
+		}
+		
 		GameManager.Instance.TakeStep();
 		isMoving = false;
 	}

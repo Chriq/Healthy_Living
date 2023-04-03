@@ -4,6 +4,7 @@ using UnityEngine.SceneManagement;
 using System;
 using UnityEditor;
 using System.Collections;
+using TMPro;
 
 public class GameManager : MonoBehaviour {
 	private static GameManager instance;
@@ -76,23 +77,34 @@ public class GameManager : MonoBehaviour {
 	}
 
 	public void GoToBed() {
-		IEnumerator coroutine = DayCycle(2f);
-		StartCoroutine(coroutine);
-	}
 
-	IEnumerator DayCycle(float delay) {
+		IEnumerator coroutine = ShowDayNumber(1.2f);
+
 		TimeManager.Instance.PauseTimer();
 		fade.FadeOutWithCallback(delegate {
 			if(SceneManager.GetActiveScene().name != "Home") {
 				SceneManager.LoadScene("Home");
 			}
+
+			timeInBed = TimeManager.Instance.GetTimeAsFloat();
+			IncrementDay();
+			TimeManager.Instance.SetTime(8, 0, TimeTag.AM);
+
+			if(maxDayEnergy > 0) {
+				StartCoroutine(coroutine);
+			}
 		});
-		timeInBed = TimeManager.Instance.GetTimeAsFloat();
 
+		
+	}
+
+	IEnumerator ShowDayNumber(float delay) {
+		GameObject dayText = GameObject.Find("Day").transform.GetChild(0).gameObject;
+		dayText.GetComponent<TextMeshProUGUI>().text = $"Day {day}";
+		dayText.SetActive(true);
 		yield return new WaitForSeconds(delay);
+		dayText.SetActive(false);
 
-		IncrementDay();
-		TimeManager.Instance.SetTime(8, 0, TimeTag.AM);
 		fade.FadeInWithCallback(delegate {
 			TimeManager.Instance.ResumeTimer();
 		});
@@ -106,7 +118,6 @@ public class GameManager : MonoBehaviour {
 			Destroy(GameObject.Find("UIManager"));
 			OnDisable();
 			Destroy(TimeManager.Instance);
-			//Destroy(this);
 		} else {
 			day++;
 			ResetPlayerGoals();
@@ -247,8 +258,8 @@ public class GameManager : MonoBehaviour {
 	}
 
 	private void AdjustEnergy() {
-		if(numGroceriesPurchased < numGroceriesOnList) {
-			currentEnergy -= 2f;
+		if(numGroceriesPurchased + extraPurchases < numGroceriesOnList) {
+			currentEnergy -= (1f + 0.01f * day);
 			OnEnergyChanged?.Invoke();
 			if(currentEnergy <= 0) {
 				GoToBed();
